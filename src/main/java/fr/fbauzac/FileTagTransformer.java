@@ -9,6 +9,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fr.fbauzac.Tag;
+import fr.fbauzac.TagTransformer;
+import fr.fbauzac.TimeCompileException;
+
 public final class FileTagTransformer implements TagTransformer {
 
     private static final Pattern KEY_VALUE_PATTERN = Pattern.compile("\\A *([^ ]*) *: *([^ ]+)\\Z");
