@@ -3,7 +3,9 @@ package fr.fbauzac;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class TimeCompile {
 
@@ -16,6 +18,7 @@ public final class TimeCompile {
 	    String str = String.format("cannot read lines from %s%n", args[0]);
 	    throw new TimeCompileException(str, e);
 	}
+
 	TimeCompile.processLines(lines);
     }
 
@@ -31,6 +34,33 @@ public final class TimeCompile {
 	    System.out.println("Duration: " + interval.durationMinutes());
 	    System.out.println();
 	}
+
+	Map<Tag, TagInfo> tagInfos = new HashMap<>();
+	intervals.stream().forEach(interval -> {
+	    List<Tag> tags = interval.getTags();
+	    if (tags.size() == 0) {
+		// Nothing to record.
+	    } else if (tags.size() == 1) {
+		Tag tag = tags.get(0);
+		TagInfo tagInfo = ensureTagInfo(tagInfos, tag);
+		tagInfo.addInterval(interval);
+	    } else {
+		System.err.println("Ignoring multitag interval " + interval);
+	    }
+	});
+
+	for (Tag tag : tagInfos.keySet()) {
+
+	}
+    }
+
+    private static TagInfo ensureTagInfo(Map<Tag, TagInfo> tagInfos, Tag tag) {
+	if (tagInfos.containsKey(tag)) {
+	    // Nothing to do.
+	} else {
+	    tagInfos.put(tag, new TagInfo());
+	}
+	return tagInfos.get(tag);
     }
 
 }
