@@ -19,7 +19,7 @@ public class Interval {
 	this.lines = lines;
     }
 
-    private static final Pattern TAG_PATTERN = Pattern.compile("(?:\\A| )\\+([\\p{Alnum}]+)");
+    private static final Pattern TAG_PATTERN = Pattern.compile("(?:\\A| )\\+([\\p{Alnum}-]+)");
 
     static List<Tag> getTags(String contents) {
 	List<Tag> accu = new ArrayList<>();
@@ -31,7 +31,8 @@ public class Interval {
     }
 
     public List<Tag> getTags() {
-	String contents = String.join("", lines.stream().map(ContentParsedLine::getLine).collect(Collectors.toList()));
+	String contents = String.join("\n",
+		lines.stream().map(ContentParsedLine::getLine).collect(Collectors.toList()));
 	return getTags(contents);
     }
 
