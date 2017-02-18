@@ -14,8 +14,8 @@ public final class Time {
 	return String.format("%02dh%02d", hour, minute);
     }
 
-    public int durationTo(Time other) {
-	return other.inMinutes() - this.inMinutes();
+    public Duration durationTo(Time other) {
+	return new Duration(other.inMinutes() - this.inMinutes());
     }
 
     private int inMinutes() {

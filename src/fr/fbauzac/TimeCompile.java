@@ -33,7 +33,7 @@ public final class TimeCompile {
 	    for (Tag tag : interval.getTags()) {
 		System.out.println("Tag: " + tag);
 	    }
-	    System.out.println("Duration: " + interval.durationMinutes());
+	    System.out.println("Duration: " + interval.getDuration());
 	    System.out.println();
 	}
 
@@ -47,7 +47,7 @@ public final class TimeCompile {
 		Tag tag = tags.get(0);
 		TagInfo tagInfo = ensureTagInfo(tagInfos, tag);
 		tagInfo.addInterval(interval);
-		totalMinutes += interval.durationMinutes();
+		totalMinutes += interval.getDuration().getMinutes();
 	    } else {
 		System.err.println("Ignoring multitag interval " + interval);
 	    }

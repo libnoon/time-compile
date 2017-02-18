@@ -12,7 +12,7 @@ public final class TagInfo {
     }
 
     public int durationMinutes() {
-	return intervals.stream().mapToInt(Interval::durationMinutes).sum();
+	return intervals.stream().map(Interval::getDuration).mapToInt(Duration::getMinutes).sum();
     }
 
 }

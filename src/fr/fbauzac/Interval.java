@@ -46,7 +46,7 @@ public class Interval {
 	printWithPrefix(out, prefix, endLine.getLine());
     }
 
-    public int durationMinutes() {
+    public Duration getDuration() {
 	return startLine.getTime().durationTo(endLine.getTime());
     }
 
