@@ -3,6 +3,8 @@ package fr.fbauzac;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,8 @@ public final class TimeCompile {
 	}
 
 	Map<Tag, TagInfo> tagInfos = new HashMap<>();
-	intervals.stream().forEach(interval -> {
+	int totalMinutes = 0;
+	for (Interval interval : intervals) {
 	    List<Tag> tags = interval.getTags();
 	    if (tags.size() == 0) {
 		// Nothing to record.
@@ -44,13 +47,20 @@ public final class TimeCompile {
 		Tag tag = tags.get(0);
 		TagInfo tagInfo = ensureTagInfo(tagInfos, tag);
 		tagInfo.addInterval(interval);
+		totalMinutes += interval.durationMinutes();
 	    } else {
 		System.err.println("Ignoring multitag interval " + interval);
 	    }
-	});
+	}
 
-	for (Tag tag : tagInfos.keySet()) {
-
+	List<Tag> tags = new ArrayList<>();
+	tags.addAll(tagInfos.keySet());
+	Collections.sort(tags);
+	for (Tag tag : tags) {
+	    TagInfo tagInfo = tagInfos.get(tag);
+	    int duration = tagInfo.durationMinutes();
+	    double percent = 100.0 * duration / totalMinutes;
+	    System.out.format("%s  %d (%.0f%%)%n", tag.toString(), duration, percent);
 	}
     }
 
