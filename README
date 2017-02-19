@@ -1,0 +1,30 @@
+============
+time-compile
+============
+
+To build, use either Maven or Bazel.
+
+Maven build
+===========
+
+    mvn package
+
+The Maven build currently lacks the following:
+* generate an executable jar
+* pack dependencies into the jar (jopts)
+* create an executable script for easier running
+
+Bazel build
+===========
+
+    $ bazel build //:time-compile_deploy.jar
+    $ ./bazel-bin/time-compile -h
+    time-compile [OPTION...] TIMEFILE
+     Options:
+       -h, --help                       Show this help screen.
+       -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.
+
+To do
+=====
+
+* Move the tests away from the output jar.
