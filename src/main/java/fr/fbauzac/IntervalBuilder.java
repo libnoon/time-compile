@@ -53,7 +53,7 @@ public final class IntervalBuilder {
 	if (endLine == null) {
 	    endLine = line;
 	} else {
-	    String message = String.format("cannot setEnd(%d): current interval (%s) already has end %d", line,
+	    String message = String.format("cannot setEnd(%s): current interval (%s) already has end %s", line,
 		    toString(), endLine.getTime());
 	    throw new TimeCompileException(message);
 	}
