@@ -10,12 +10,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+
 public final class TimeCompile {
 
     public static void main(String[] args) throws TimeCompileException {
+	OptionParser parser = new OptionParser("hm:");
+	parser.accepts("maps").withRequiredArg();
+	parser.accepts("help");
+	OptionSet options = parser.parse(args);
+	if (options.has("h") || options.has("help")) {
+	    usage();
+	    return;
+	}
+	if (options.nonOptionArguments().size() < 1) {
+	    System.err.println("Missing parameter");
+	    System.exit(1);
+	} else if (options.nonOptionArguments().size() > 1) {
+	    System.err.println("Too many arguments");
+	    System.exit(1);
+	}
+
+	String maps;
+	if (options.has("m")) {
+	    maps = (String) options.valueOf("m");
+	} else if (options.has("maps")) {
+	    maps = (String) options.valueOf("maps");
+	} else {
+	    maps = null;
+	}
+
 	List<String> lines;
 	try {
-	    lines = Files.readAllLines(Paths.get(args[0]));
+	    lines = Files.readAllLines(Paths.get((String) options.nonOptionArguments().get(0)));
 	} catch (IOException e) {
 	    System.out.format("cannot read lines from %s%n", args[0]);
 	    String str = String.format("cannot read lines from %s%n", args[0]);
@@ -23,8 +51,8 @@ public final class TimeCompile {
 	}
 
 	TagTransformer tagTransformer = new IdentityTagTransformer();
-	if (args.length >= 2) {
-	    for (String fileName : args[1].split(",")) {
+	if (maps != null) {
+	    for (String fileName : maps.split(",")) {
 		Path path = Paths.get(fileName);
 		tagTransformer = new FileTagTransformer(path, tagTransformer);
 	    }
@@ -33,6 +61,13 @@ public final class TimeCompile {
 	System.err.println("tagTransformer: " + tagTransformer);
 
 	TimeCompile.processLines(lines, tagTransformer);
+    }
+
+    private static void usage() {
+	System.err.println("time-compile [OPTION...] TIMEFILE");
+	System.err.println(" Options:");
+	System.err.println("   -h, --help                       Show this help screen.");
+	System.err.println("   -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.");
     }
 
     private static void processLines(List<String> lines, TagTransformer tagTransformer) throws TimeCompileException {
