@@ -72,8 +72,6 @@ public final class TimeCompile {
 	    }
 	}
 
-	System.err.println("tagTransformer: " + tagTransformer);
-
 	TimeCompile.processLines(lines, tagTransformer);
     }
 
@@ -87,15 +85,6 @@ public final class TimeCompile {
     private static void processLines(List<String> lines, TagTransformer tagTransformer) throws TimeCompileException {
 	IntervalsReader reader = new IntervalsReader();
 	List<Interval> intervals = reader.convert(lines);
-	for (Interval interval : intervals) {
-	    System.out.println("Interval:");
-	    interval.print(System.out, "  ");
-	    for (Tag tag : interval.getTags()) {
-		System.out.println("Tag: " + tag);
-	    }
-	    System.out.println("Duration: " + interval.getDuration());
-	    System.out.println();
-	}
 
 	Map<Tag, Category> categoriesMap = new HashMap<>();
 	for (Interval interval : intervals) {

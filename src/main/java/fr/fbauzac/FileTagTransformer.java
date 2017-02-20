@@ -60,7 +60,6 @@ public final class FileTagTransformer implements TagTransformer {
     public Tag transform(Tag tag) {
 	Tag newTag = nextTagTransformer.transform(tag);
 	if (sources.contains(newTag.toString())) {
-	    System.err.format("Transforming tag {%s} to {%s}%n", newTag.toString(), target);
 	    return new Tag(target);
 	} else {
 	    return newTag;
