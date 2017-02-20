@@ -1,6 +1,10 @@
 package fr.fbauzac;
 
+import static java.util.stream.Collectors.toList;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -41,13 +45,23 @@ public final class TimeCompile {
 	    maps = null;
 	}
 
+	String commandLineFileName = (String) options.nonOptionArguments().get(0);
+
 	List<String> lines;
-	try {
-	    lines = Files.readAllLines(Paths.get((String) options.nonOptionArguments().get(0)));
-	} catch (IOException e) {
-	    System.out.format("cannot read lines from %s%n", args[0]);
-	    String str = String.format("cannot read lines from %s%n", args[0]);
-	    throw new TimeCompileException(str, e);
+	if (commandLineFileName.equals("-")) {
+	    try (InputStreamReader isr = new InputStreamReader(System.in);
+		    BufferedReader br = new BufferedReader(isr);) {
+		lines = br.lines().collect(toList());
+	    } catch (IOException e) {
+		throw new TimeCompileException("cannot read lines from stdin", e);
+	    }
+	} else {
+	    try {
+		lines = Files.readAllLines(Paths.get(commandLineFileName));
+	    } catch (IOException e) {
+		String str = String.format("cannot read lines from %s", args[0]);
+		throw new TimeCompileException(str, e);
+	    }
 	}
 
 	TagTransformer tagTransformer = new IdentityTagTransformer();
