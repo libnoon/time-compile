@@ -131,10 +131,10 @@ public final class TimeCompile {
 		Duration duration = category.getDuration();
 		int durationMinutes = duration.getMinutes();
 		double percent = 100.0 * durationMinutes / totalMinutes;
-		System.out.format("%10s  %7s (%.0f%%)%n", tag.toString(), duration, percent);
+		System.out.format("%15s  %7s (%.0f%%)%n", tag.toString(), duration, percent);
 	    }
 	}
-	System.out.format("%10s  %7s%n", "TOTAL", new Duration(totalMinutes));
+	System.out.format("%15s  %7s%n", "TOTAL", new Duration(totalMinutes));
     }
 
     private static Category ensureCategory(Map<Tag, Category> tagInfos, Tag tag) {
