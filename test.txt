@@ -1,9 +1,0 @@
-08h45
-+standup do something
-09h15
-+BMS-123
-part of the sprint
-09h45
-+BMS-456
-sheriff
-10h00
