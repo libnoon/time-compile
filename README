@@ -17,8 +17,8 @@ The Maven build currently lacks the following:
 Bazel build
 ===========
 
-    $ bazel build //:time-compile_deploy.jar
-    $ ./bazel-bin/time-compile -h
+    $ bazel build //...
+    $ ./bazel-bin/time-compile-cli -h
     time-compile [OPTION...] TIMEFILE
      Options:
        -h, --help                       Show this help screen.
