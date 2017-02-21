@@ -31,3 +31,7 @@ If you use Eclipse, there is a e2b plugin available, but it does not
 do much.
 
 You'll in any case need to tell Eclipse where to find the jopts jar.
+
+Also, if you have bazel errors about file target/classes/BUILD, tell
+Eclipse to ignore the BUILD files instead of copying them into the
+target folder.
