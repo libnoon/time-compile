@@ -17,7 +17,7 @@ To test::
 
 To run::
 
-  $ ./bazel-bin/time-compile-cli -h
+  $ ./bazel-bin/cli/cli -h
   time-compile [OPTION...] TIMEFILE
    Options:
      -h, --help                       Show this help screen.
