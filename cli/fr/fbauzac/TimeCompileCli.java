@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import joptsimple.OptionParser;
@@ -31,14 +33,9 @@ final class TimeCompileCli {
 	    System.exit(1);
 	}
 
-	String maps;
-	if (options.has("m")) {
-	    maps = (String) options.valueOf("m");
-	} else if (options.has("maps")) {
-	    maps = (String) options.valueOf("maps");
-	} else {
-	    maps = null;
-	}
+	List<String> maps = new ArrayList<>();
+	maps.addAll((Collection<? extends String>) options.valuesOf("map"));
+	maps.addAll((Collection<? extends String>) options.valuesOf("m"));
 
 	String commandLineFileName = (String) options.nonOptionArguments().get(0);
 
@@ -59,13 +56,24 @@ final class TimeCompileCli {
 	    }
 	}
 
-	TimeCompile.summarize(maps, lines);
+	Summary summary = TimeCompile.summarize(maps, lines);
+
+	for (Category category : summary.getCategories()) {
+	    Tag tag = category.getTag();
+	    Duration duration = category.getDuration();
+	    int durationMinutes = duration.getMinutes();
+	    double percent = 100.0 * durationMinutes / summary.getTotalDuration().getMinutes();
+	    System.out.format("%15s  %7s (%.0f%%)%n", tag.getName(), duration, percent);
+	}
+	System.out.format("%15s  %7s%n", "TOTAL", summary.getTotalDuration());
+
     }
 
     private static void usage() {
 	System.err.println("time-compile [OPTION...] TIMEFILE");
 	System.err.println(" Options:");
-	System.err.println("   -h, --help                       Show this help screen.");
-	System.err.println("   -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.");
+	System.err.println("   -h, --help          Show this help screen.");
+	System.err.println("   -m, --map=MAPFILE   Apply transformations to the tags.");
+	System.err.println("                       This option can be repeated.");
     }
 }

@@ -4,8 +4,12 @@ public final class Duration {
 
     private final int minutes;
 
-    public Duration(int minutes) {
+    private Duration(int minutes) {
 	this.minutes = minutes;
+    }
+
+    public static Duration ofMinutes(int minutes) {
+	return new Duration(minutes);
     }
 
     @Override

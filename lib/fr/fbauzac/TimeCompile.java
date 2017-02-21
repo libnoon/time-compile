@@ -1,28 +1,34 @@
 package fr.fbauzac;
 
+import static java.util.stream.Collectors.toList;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public final class TimeCompile {
 
-    public static void summarize(String maps, List<String> lines) throws TimeCompileException {
+    public static Summary summarize(List<String> mapFileNames, List<String> lines) throws TimeCompileException {
+	Objects.requireNonNull(mapFileNames);
+	Objects.requireNonNull(lines);
+
 	TagTransformer tagTransformer = new IdentityTagTransformer();
-	if (maps != null) {
-	    for (String fileName : maps.split(",")) {
-		Path path = Paths.get(fileName);
-		tagTransformer = new FileTagTransformer(path, tagTransformer);
-	    }
+	for (String fileName : mapFileNames) {
+	    Path path = Paths.get(fileName);
+	    tagTransformer = new FileTagTransformer(path, tagTransformer);
 	}
 
-	TimeCompile.processLines(lines, tagTransformer);
+	return TimeCompile.processLines(lines, tagTransformer);
     }
 
-    private static void processLines(List<String> lines, TagTransformer tagTransformer) throws TimeCompileException {
+    public static Summary processLines(List<String> lines, TagTransformer tagTransformer) throws TimeCompileException {
+	Objects.requireNonNull(lines);
+	Objects.requireNonNull(tagTransformer);
+
 	IntervalsReader reader = new IntervalsReader();
 	List<Interval> intervals = reader.convert(lines);
 
@@ -44,33 +50,25 @@ public final class TimeCompile {
 	    }
 	}
 
-	int totalMinutes = 0;
-	for (Category category : categoriesMap.values()) {
-	    totalMinutes += category.getDuration().getMinutes();
-	}
+	List<Category> categories = categoriesMap.values().stream().filter(c -> !c.getTag().getName().isEmpty())
+		.collect(toList());
 
-	List<Tag> tags = new ArrayList<>();
-	tags.addAll(categoriesMap.keySet());
-	Collections.sort(tags);
-	for (Tag tag : tags) {
-	    if (tag.toString().equals("")) {
-		// Ignored.
-	    } else {
-		Category category = categoriesMap.get(tag);
-		Duration duration = category.getDuration();
-		int durationMinutes = duration.getMinutes();
-		double percent = 100.0 * durationMinutes / totalMinutes;
-		System.out.format("%15s  %7s (%.0f%%)%n", tag.toString(), duration, percent);
-	    }
-	}
-	System.out.format("%15s  %7s%n", "TOTAL", new Duration(totalMinutes));
+	Duration totalMinutes = Duration
+		.ofMinutes(categories.stream().map(Category::getDuration).mapToInt(Duration::getMinutes).sum());
+
+	Comparator<Category> compareByDecreasingDuration = (a, b) -> {
+	    return b.getDuration().getMinutes() - a.getDuration().getMinutes();
+	};
+	categories.sort(compareByDecreasingDuration);
+
+	return new Summary(categories, totalMinutes);
     }
 
     private static Category ensureCategory(Map<Tag, Category> tagInfos, Tag tag) {
 	if (tagInfos.containsKey(tag)) {
 	    // Nothing to do.
 	} else {
-	    tagInfos.put(tag, new Category());
+	    tagInfos.put(tag, new Category(tag));
 	}
 	return tagInfos.get(tag);
     }

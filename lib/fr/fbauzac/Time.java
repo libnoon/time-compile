@@ -15,7 +15,7 @@ public final class Time {
     }
 
     public Duration durationTo(Time other) {
-	return new Duration(other.inMinutes() - this.inMinutes());
+	return Duration.ofMinutes(other.inMinutes() - this.inMinutes());
     }
 
     private int inMinutes() {

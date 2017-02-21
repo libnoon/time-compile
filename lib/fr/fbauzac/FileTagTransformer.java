@@ -3,9 +3,9 @@ package fr.fbauzac;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,17 +16,12 @@ public final class FileTagTransformer implements TagTransformer {
     private Path path;
     private TagTransformer nextTagTransformer;
 
-    /**
-     * Target of the transformation (can be null).
-     */
-    private String target;
+    private Map<String, String> map = new HashMap<>();
 
     @Override
     public String toString() {
 	return String.format("FileTagTransformer(\"%s\", %s)", path, nextTagTransformer);
     }
-
-    private Set<String> sources = new HashSet<>();
 
     public FileTagTransformer(Path path, TagTransformer tagTransformer) throws TimeCompileException {
 	this.nextTagTransformer = tagTransformer;
@@ -42,13 +37,13 @@ public final class FileTagTransformer implements TagTransformer {
 	for (String line : lines) {
 	    Matcher matcher = KEY_VALUE_PATTERN.matcher(line);
 	    if (matcher.matches()) {
-		this.target = matcher.group(1);
+		String target = matcher.group(1);
 
 		for (String source : matcher.group(2).split(" +")) {
 		    if (source.isEmpty()) {
 			// Ignore.
 		    } else {
-			this.sources.add(source);
+			map.put(source, target);
 		    }
 		}
 	    }
@@ -59,8 +54,8 @@ public final class FileTagTransformer implements TagTransformer {
     @Override
     public Tag transform(Tag tag) {
 	Tag newTag = nextTagTransformer.transform(tag);
-	if (sources.contains(newTag.toString())) {
-	    return new Tag(target);
+	if (map.containsKey(newTag.getName())) {
+	    return new Tag(map.get(newTag.getName()));
 	} else {
 	    return newTag;
 	}

@@ -12,3 +12,11 @@ java_test(
         "//lib:time-compile",
     ],
 )
+
+java_test(
+    name = "TimeCompileTest",
+    size = "small",
+    srcs = ["fr/fbauzac/TimeCompileTest.java"],
+    test_class = "fr.fbauzac.TimeCompileTest",
+    deps = ["//lib:time-compile"],
+)

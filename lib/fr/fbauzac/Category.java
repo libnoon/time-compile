@@ -5,7 +5,12 @@ import java.util.List;
 
 public final class Category {
 
-    private List<Interval> intervals = new ArrayList<>();
+    private final List<Interval> intervals = new ArrayList<>();
+    private final Tag tag;
+
+    public Category(Tag tag) {
+	this.tag = tag;
+    }
 
     public void addInterval(Interval interval) {
 	intervals.add(interval);
@@ -16,7 +21,11 @@ public final class Category {
     }
 
     public Duration getDuration() {
-	return new Duration(durationMinutes());
+	return Duration.ofMinutes(durationMinutes());
+    }
+
+    public Tag getTag() {
+	return tag;
     }
 
 }
