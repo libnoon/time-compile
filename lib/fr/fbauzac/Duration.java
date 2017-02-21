@@ -2,7 +2,7 @@ package fr.fbauzac;
 
 public final class Duration {
 
-    private int minutes;
+    private final int minutes;
 
     public Duration(int minutes) {
 	this.minutes = minutes;
