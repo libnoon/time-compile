@@ -7,14 +7,22 @@ Summarize a timeline written in text.
 Building
 ========
 
-::
+To build::
 
-    $ bazel build //...
-    $ ./bazel-bin/time-compile-cli -h
-    time-compile [OPTION...] TIMEFILE
-     Options:
-       -h, --help                       Show this help screen.
-       -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.
+  $ bazel build //...
+
+To test::
+
+  $ bazel test //tests:all
+
+To run::
+
+  $ ./bazel-bin/time-compile-cli -h
+  time-compile [OPTION...] TIMEFILE
+   Options:
+     -h, --help                       Show this help screen.
+     -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.
+
 
 Development
 ===========
