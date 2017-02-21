@@ -3,7 +3,7 @@ package fr.fbauzac;
 import java.util.Objects;
 
 public final class Tag implements Comparable<Tag> {
-    private String name;
+    private final String name;
 
     public Tag(String name) {
 	Objects.requireNonNull(name);
