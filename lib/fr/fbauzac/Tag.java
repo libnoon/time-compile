@@ -15,6 +15,10 @@ public final class Tag implements Comparable<Tag> {
 	return name;
     }
 
+    public String getName() {
+	return name;
+    }
+
     @Override
     public int compareTo(Tag other) {
 	return name.compareTo(other.name);
