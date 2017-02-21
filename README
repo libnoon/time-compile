@@ -2,10 +2,12 @@
 time-compile
 ============
 
-To build, use Bazel.
+Summarize a timeline written in text.
 
-Bazel build
-===========
+Building
+========
+
+::
 
     $ bazel build //...
     $ ./bazel-bin/time-compile-cli -h
@@ -13,3 +15,11 @@ Bazel build
      Options:
        -h, --help                       Show this help screen.
        -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.
+
+Development
+===========
+
+If you use Eclipse, there is a e2b plugin available, but it does not
+do much.
+
+You'll in any case need to tell Eclipse where to find the jopts jar.
