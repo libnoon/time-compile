@@ -23,7 +23,7 @@ public final class FileTagTransformer implements TagTransformer {
 	return String.format("FileTagTransformer(\"%s\", %s)", path, nextTagTransformer);
     }
 
-    public FileTagTransformer(Path path, TagTransformer tagTransformer) throws TimeCompileException {
+    FileTagTransformer(Path path, TagTransformer tagTransformer) throws TimeCompileException {
 	this.nextTagTransformer = tagTransformer;
 	this.path = path;
 
@@ -35,6 +35,10 @@ public final class FileTagTransformer implements TagTransformer {
 	    throw new TimeCompileException(message, e);
 	}
 	for (String line : lines) {
+	    if (line.startsWith("#")) {
+		// Ignore comments
+		continue;
+	    }
 	    Matcher matcher = KEY_VALUE_PATTERN.matcher(line);
 	    if (matcher.matches()) {
 		String target = matcher.group(1);

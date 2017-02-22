@@ -15,13 +15,17 @@ To test::
 
   $ bazel test //tests:all
 
-To run::
+To run the CLI::
 
-  $ ./bazel-bin/cli/cli -h
+  $ bazel run //cli -- -h
   time-compile [OPTION...] TIMEFILE
    Options:
      -h, --help                       Show this help screen.
      -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.
+
+To run the GUI (work in progress)::
+
+  $ bazel run //gui
 
 
 Development
