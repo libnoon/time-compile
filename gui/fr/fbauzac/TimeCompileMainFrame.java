@@ -1,7 +1,9 @@
 package fr.fbauzac;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
@@ -27,6 +29,7 @@ public final class TimeCompileMainFrame extends JFrame {
 	mapTextArea = new JTextArea("# Write your mappings here");
 	resultTextArea = new JTextArea("The results will be displayed here");
 	resultTextArea.setEditable(false);
+	resultTextArea.setFont(new Font("monospaced", Font.PLAIN, resultTextArea.getFont().getSize()));
 	getContentPane().add(timeLineTextArea, BorderLayout.CENTER);
 	getContentPane().add(mapTextArea, BorderLayout.LINE_START);
 	getContentPane().add(resultTextArea, BorderLayout.LINE_END);
@@ -53,7 +56,9 @@ public final class TimeCompileMainFrame extends JFrame {
     }
 
     private void computeAndDisplayResults() {
-	TagTransformer tagTransformer = new IdentityTagTransformer();
+	// Use identity for the moment.
+	HashMap<String, String> map = new HashMap<>();
+
 	Document document = timeLineTextArea.getDocument();
 	String text;
 	try {
@@ -65,19 +70,23 @@ public final class TimeCompileMainFrame extends JFrame {
 
 	Summary summary;
 	try {
-	    summary = TimeCompile.processLines(Arrays.asList(text.split("\n")), tagTransformer);
+	    summary = TimeCompile.summarize(Arrays.asList(text.split("\n")), map);
 	} catch (TimeCompileException e) {
-	    System.out.println("Failed to process input: " + e);
+	    resultTextArea.setText("Failed to process input: " + e);
 	    return;
 	}
 	StringBuilder sb = new StringBuilder();
 	int totalDuration = summary.getTotalDuration().getMinutes();
-	for (Category cat : summary.getCategories()) {
-	    ;
-	    Duration duration = cat.getDuration();
-	    sb.append(String.format("%10s  %8s  %.1f%%%n", cat.getTag(), duration,
+	for (Category category : summary.getCategories()) {
+	    Duration duration = category.getDuration();
+	    sb.append(String.format("%10s  %8s  %.1f%%%n", category.getTag(), duration,
 		    100.0 * duration.getMinutes() / totalDuration));
 	}
-	resultTextArea.setText(sb.toString());
+	String result = sb.toString();
+	if (result.isEmpty()) {
+	    resultTextArea.setText("(nothing to show here)");
+	} else {
+	    resultTextArea.setText(result);
+	}
     }
 }

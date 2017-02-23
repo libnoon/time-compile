@@ -2,8 +2,6 @@ package fr.fbauzac;
 
 import static java.util.stream.Collectors.toList;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -12,45 +10,43 @@ import java.util.Objects;
 
 public final class TimeCompile {
 
-    public static Summary summarize(List<String> mapFileNames, List<String> lines) throws TimeCompileException {
-	Objects.requireNonNull(mapFileNames);
+    /**
+     * Compute the summary of time spent, given the timeline and the mapping.
+     * 
+     * @param lines
+     *            list of lines representing the timeline.
+     * @param map
+     *            the mapping for transformations of tags.
+     * @return the summary.
+     * @throws TimeCompileException
+     *             when there is an error while processing the input.
+     */
+    public static Summary summarize(List<String> lines, Map<String, String> map) throws TimeCompileException {
 	Objects.requireNonNull(lines);
-
-	TagTransformer tagTransformer = new IdentityTagTransformer();
-	for (String fileName : mapFileNames) {
-	    Path path = Paths.get(fileName);
-	    tagTransformer = new FileTagTransformer(path, tagTransformer);
-	}
-
-	return TimeCompile.processLines(lines, tagTransformer);
-    }
-
-    public static Summary processLines(List<String> lines, TagTransformer tagTransformer) throws TimeCompileException {
-	Objects.requireNonNull(lines);
-	Objects.requireNonNull(tagTransformer);
+	Objects.requireNonNull(map);
 
 	IntervalsReader reader = new IntervalsReader();
 	List<Interval> intervals = reader.convert(lines);
 
-	Map<Tag, Category> categoriesMap = new HashMap<>();
+	Map<String, Category> categoriesMap = new HashMap<>();
 	for (Interval interval : intervals) {
-	    List<Tag> tags = interval.getTags();
+	    List<String> tags = interval.getTags();
 	    if (tags.size() == 0) {
 		// Nothing to record.
 	    } else if (tags.size() == 1) {
-		Tag tag = tagTransformer.transform(tags.get(0));
-		if (tag.toString().equals("")) {
+		String tag = TagTransformer.transform(map, tags.get(0));
+		if (tag.equals("")) {
 		    // Skip.
 		} else {
-		    Category tagInfo = ensureCategory(categoriesMap, tag);
-		    tagInfo.addInterval(interval);
+		    Category category = categoriesMap.computeIfAbsent(tag, (k) -> new Category(tag));
+		    category.addInterval(interval);
 		}
 	    } else {
 		System.err.println("Ignoring multitag interval " + interval);
 	    }
 	}
 
-	List<Category> categories = categoriesMap.values().stream().filter(c -> !c.getTag().getName().isEmpty())
+	List<Category> categories = categoriesMap.values().stream().filter(c -> !c.getTag().isEmpty())
 		.collect(toList());
 
 	Duration totalMinutes = Duration
@@ -62,15 +58,6 @@ public final class TimeCompile {
 	categories.sort(compareByDecreasingDuration);
 
 	return new Summary(categories, totalMinutes);
-    }
-
-    private static Category ensureCategory(Map<Tag, Category> tagInfos, Tag tag) {
-	if (tagInfos.containsKey(tag)) {
-	    // Nothing to do.
-	} else {
-	    tagInfos.put(tag, new Category(tag));
-	}
-	return tagInfos.get(tag);
     }
 
 }

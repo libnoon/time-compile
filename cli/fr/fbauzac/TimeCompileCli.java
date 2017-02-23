@@ -6,10 +6,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -56,17 +59,34 @@ final class TimeCompileCli {
 	    }
 	}
 
-	Summary summary = TimeCompile.summarize(maps, lines);
+	Map<String, String> map = new HashMap<String, String>();
+	for (String mapFile : maps) {
+	    Map<String, String> fileMap = parseMapFile(Paths.get(mapFile));
+	    map.putAll(fileMap);
+	}
+
+	Summary summary = TimeCompile.summarize(lines, map);
 
 	for (Category category : summary.getCategories()) {
-	    Tag tag = category.getTag();
+	    String tag = category.getTag();
 	    Duration duration = category.getDuration();
 	    int durationMinutes = duration.getMinutes();
 	    double percent = 100.0 * durationMinutes / summary.getTotalDuration().getMinutes();
-	    System.out.format("%15s  %7s (%.0f%%)%n", tag.getName(), duration, percent);
+	    System.out.format("%15s  %7s (%.0f%%)%n", tag, duration, percent);
 	}
 	System.out.format("%15s  %7s%n", "TOTAL", summary.getTotalDuration());
 
+    }
+
+    private static Map<String, String> parseMapFile(Path path) throws TimeCompileException {
+	List<String> lines;
+	try {
+	    lines = Files.readAllLines(path);
+	} catch (IOException e) {
+	    String message = String.format("cannot read %s%n", path);
+	    throw new TimeCompileException(message, e);
+	}
+	return MapParser.parse(lines);
     }
 
     private static void usage() {

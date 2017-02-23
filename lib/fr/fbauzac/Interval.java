@@ -21,16 +21,16 @@ public class Interval {
 
     private static final Pattern TAG_PATTERN = Pattern.compile("(?:\\A| )\\+([\\p{Alnum}-]+)");
 
-    static List<Tag> getTags(String contents) {
-	List<Tag> accu = new ArrayList<>();
+    static List<String> getTags(String contents) {
+	List<String> accu = new ArrayList<>();
 	Matcher matcher = TAG_PATTERN.matcher(contents);
 	while (matcher.find()) {
-	    accu.add(new Tag(matcher.group(1)));
+	    accu.add(matcher.group(1));
 	}
 	return accu;
     }
 
-    public List<Tag> getTags() {
+    public List<String> getTags() {
 	String contents = String.join("\n",
 		lines.stream().map(ContentParsedLine::getLine).collect(Collectors.toList()));
 	return getTags(contents);

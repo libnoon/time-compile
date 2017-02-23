@@ -6,9 +6,9 @@ import java.util.List;
 public final class Category {
 
     private final List<Interval> intervals = new ArrayList<>();
-    private final Tag tag;
+    private final String tag;
 
-    public Category(Tag tag) {
+    public Category(String tag) {
 	this.tag = tag;
     }
 
@@ -24,7 +24,7 @@ public final class Category {
 	return Duration.ofMinutes(durationMinutes());
     }
 
-    public Tag getTag() {
+    public String getTag() {
 	return tag;
     }
 
