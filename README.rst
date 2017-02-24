@@ -4,6 +4,12 @@ time-compile
 
 Summarize a timeline written in text.
 
+License
+=======
+
+The version 3 of the GNU General Public License, or (at your option)
+any later version, applies to this source code.
+
 Building
 ========
 
