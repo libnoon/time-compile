@@ -1,4 +1,4 @@
-package fr.fbauzac;
+package fr.fbauzac.timecompile;
 
 import java.util.ArrayList;
 import java.util.List;

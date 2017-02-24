@@ -1,4 +1,4 @@
-package fr.fbauzac;
+package fr.fbauzac.timecompile;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;

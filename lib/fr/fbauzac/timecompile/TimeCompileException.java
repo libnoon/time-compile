@@ -1,4 +1,4 @@
-package fr.fbauzac;
+package fr.fbauzac.timecompile;
 
 import java.io.IOException;
 

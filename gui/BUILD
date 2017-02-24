@@ -6,5 +6,5 @@ java_binary(
     deps = [
         "//lib:time-compile",
     ],
-    main_class = "fr.fbauzac.TimeCompileGui",
+    main_class = "fr.fbauzac.timecompile.TimeCompileGui",
 )

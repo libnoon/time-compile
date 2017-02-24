@@ -1,4 +1,4 @@
-package fr.fbauzac;
+package fr.fbauzac.timecompile;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -11,6 +11,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+
+import fr.fbauzac.timecompile.Category;
+import fr.fbauzac.timecompile.Duration;
+import fr.fbauzac.timecompile.Summary;
+import fr.fbauzac.timecompile.TimeCompile;
+import fr.fbauzac.timecompile.TimeCompileException;
 
 public final class TimeCompileMainFrame extends JFrame {
 

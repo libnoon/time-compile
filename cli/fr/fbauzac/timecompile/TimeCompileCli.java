@@ -1,4 +1,4 @@
-package fr.fbauzac;
+package fr.fbauzac.timecompile;
 
 import static java.util.stream.Collectors.toList;
 
@@ -14,6 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fr.fbauzac.timecompile.Category;
+import fr.fbauzac.timecompile.Duration;
+import fr.fbauzac.timecompile.MapParser;
+import fr.fbauzac.timecompile.Summary;
+import fr.fbauzac.timecompile.TimeCompile;
+import fr.fbauzac.timecompile.TimeCompileException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 

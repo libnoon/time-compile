@@ -1,4 +1,4 @@
-package fr.fbauzac;
+package fr.fbauzac.timecompile;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+
+import fr.fbauzac.timecompile.Category;
+import fr.fbauzac.timecompile.Summary;
+import fr.fbauzac.timecompile.TimeCompile;
+import fr.fbauzac.timecompile.TimeCompileException;
 
 public class TimeCompileTest {
     private final Map<String, String> identity = new HashMap<>();
