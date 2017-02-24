@@ -9,26 +9,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.fbauzac.timecompile.Category;
-import fr.fbauzac.timecompile.Duration;
-import fr.fbauzac.timecompile.MapParser;
-import fr.fbauzac.timecompile.Summary;
-import fr.fbauzac.timecompile.TimeCompile;
-import fr.fbauzac.timecompile.TimeCompileException;
+import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 
 final class TimeCompileCli {
 
     public static void main(String[] args) throws TimeCompileException {
-	OptionParser parser = new OptionParser("hm:");
-	parser.accepts("maps").withRequiredArg();
+	OptionParser parser = new OptionParser();
+
+	ArgumentAcceptingOptionSpec<String> mapsLongOption = parser.accepts("map").withRequiredArg();
+	ArgumentAcceptingOptionSpec<String> mapsShortOption = parser.accepts("m").withRequiredArg();
 	parser.accepts("help");
+	parser.accepts("h");
+
 	OptionSet options = parser.parse(args);
 	if (options.has("h") || options.has("help")) {
 	    usage();
@@ -43,8 +41,8 @@ final class TimeCompileCli {
 	}
 
 	List<String> maps = new ArrayList<>();
-	maps.addAll((Collection<? extends String>) options.valuesOf("map"));
-	maps.addAll((Collection<? extends String>) options.valuesOf("m"));
+	maps.addAll(options.valuesOf(mapsLongOption));
+	maps.addAll(options.valuesOf(mapsShortOption));
 
 	String commandLineFileName = (String) options.nonOptionArguments().get(0);
 
