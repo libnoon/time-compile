@@ -12,12 +12,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import fr.fbauzac.timecompile.Category;
-import fr.fbauzac.timecompile.Duration;
-import fr.fbauzac.timecompile.Summary;
-import fr.fbauzac.timecompile.TimeCompile;
-import fr.fbauzac.timecompile.TimeCompileException;
-
 public final class TimeCompileMainFrame extends JFrame {
 
     /**
@@ -25,20 +19,29 @@ public final class TimeCompileMainFrame extends JFrame {
      */
     private static final long serialVersionUID = 1L;
     private JTextArea timeLineTextArea;
-    private JTextArea mapTextArea;
     private JTextArea resultTextArea;
+    private MapEditor mapEditor;
 
     TimeCompileMainFrame() {
 	super("TimeCompile");
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	timeLineTextArea = new JTextArea("Paste your timeline here");
-	mapTextArea = new JTextArea("# Write your mappings here");
+	mapEditor = new MapEditor();
 	resultTextArea = new JTextArea("The results will be displayed here");
 	resultTextArea.setEditable(false);
 	resultTextArea.setFont(new Font("monospaced", Font.PLAIN, resultTextArea.getFont().getSize()));
 	getContentPane().add(timeLineTextArea, BorderLayout.CENTER);
-	getContentPane().add(mapTextArea, BorderLayout.LINE_START);
+	getContentPane().add(mapEditor, BorderLayout.LINE_START);
 	getContentPane().add(resultTextArea, BorderLayout.LINE_END);
+
+	{
+	    HashMap<String, String> map = new HashMap<>();
+	    map.put("sup1", "sup");
+	    map.put("sup2", "sup");
+	    map.put("toto", "titi");
+	    mapEditor.setMap(map);
+	}
+
 	timeLineTextArea.getDocument().addDocumentListener(new DocumentListener() {
 
 	    @Override
