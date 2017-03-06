@@ -11,11 +11,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import fr.fbauzac.timecompile.Category;
-import fr.fbauzac.timecompile.Summary;
-import fr.fbauzac.timecompile.TimeCompile;
-import fr.fbauzac.timecompile.TimeCompileException;
-
 public class TimeCompileTest {
     private final Map<String, String> identity = new HashMap<>();
 
@@ -71,5 +66,12 @@ public class TimeCompileTest {
 	Category category2 = result.getCategories().get(1);
 	assertThat(category2.getTag(), equalTo("myothertag"));
 	assertThat(category2.getDuration().getMinutes(), equalTo(20));
+    }
+
+    @Test
+    public void emptyFirstLine() throws TimeCompileException {
+	List<String> lines = Arrays.asList("", "10h00", "+tag", "11h00");
+	Summary result = TimeCompile.summarize(lines, identity);
+	assertThat(result.getTotalDuration().getMinutes(), equalTo(60));
     }
 }

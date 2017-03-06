@@ -20,7 +20,9 @@ public final class ContentParsedLine implements ParsedLine {
 
     @Override
     public void update(IntervalBuilder builder, List<Interval> output) {
-	builder.addLine(this);
+	if (builder.hasStartTime()) {
+	    builder.addLine(this);
+	}
     }
 
 }
