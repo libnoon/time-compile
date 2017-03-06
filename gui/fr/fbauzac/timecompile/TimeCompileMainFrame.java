@@ -1,11 +1,13 @@
 package fr.fbauzac.timecompile;
 
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -14,40 +16,35 @@ import javax.swing.text.Document;
 
 public final class TimeCompileMainFrame extends JFrame {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
-    private JTextArea timeLineTextArea;
-    private JTextArea resultTextArea;
-    private MapEditor mapEditor;
 
-    TimeCompileMainFrame() {
+    private final JTextArea mapTextArea;
+    private final JTextArea resultTextArea;
+    private final JTextArea timeLineTextArea;
+
+    public TimeCompileMainFrame() {
 	super("TimeCompile");
-	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	timeLineTextArea = new JTextArea("Paste your timeline here");
-	mapEditor = new MapEditor();
+	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	JPanel jPanel = new JPanel();
+	jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.X_AXIS));
+
+	String timeLineText = Arrays
+		.asList("# Paste your timeline here:", "14h00", "+m meeting with J. Bond", "15h00",
+			"+s support for Charlemagne", "15h34")
+		.stream().map(s -> s + "\n").collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+		.toString();
+	timeLineTextArea = new JTextArea(timeLineText);
+	jPanel.add(timeLineTextArea);
+
+	mapTextArea = new JTextArea("# Put your map here");
+	jPanel.add(mapTextArea);
+
 	resultTextArea = new JTextArea("The results will be displayed here");
 	resultTextArea.setEditable(false);
 	resultTextArea.setFont(new Font("monospaced", Font.PLAIN, resultTextArea.getFont().getSize()));
-	getContentPane().add(timeLineTextArea, BorderLayout.CENTER);
-	getContentPane().add(mapEditor, BorderLayout.LINE_START);
-	getContentPane().add(resultTextArea, BorderLayout.LINE_END);
-
-	{
-	    HashMap<String, String> map = new HashMap<>();
-	    map.put("sup1", "sup");
-	    map.put("sup2", "sup");
-	    map.put("toto", "titi");
-	    mapEditor.setMap(map);
-	}
+	jPanel.add(resultTextArea);
 
 	timeLineTextArea.getDocument().addDocumentListener(new DocumentListener() {
-
-	    @Override
-	    public void insertUpdate(DocumentEvent e) {
-		computeAndDisplayResults();
-	    }
 
 	    @Override
 	    public void removeUpdate(DocumentEvent e) {
@@ -55,31 +52,46 @@ public final class TimeCompileMainFrame extends JFrame {
 	    }
 
 	    @Override
-	    public void changedUpdate(DocumentEvent e) {
+	    public void insertUpdate(DocumentEvent e) {
 		computeAndDisplayResults();
 	    }
 
+	    @Override
+	    public void changedUpdate(DocumentEvent e) {
+		computeAndDisplayResults();
+	    }
 	});
+
+	mapTextArea.getDocument().addDocumentListener(new DocumentListener() {
+
+	    @Override
+	    public void removeUpdate(DocumentEvent e) {
+		computeAndDisplayResults();
+	    }
+
+	    @Override
+	    public void insertUpdate(DocumentEvent e) {
+		computeAndDisplayResults();
+	    }
+
+	    @Override
+	    public void changedUpdate(DocumentEvent e) {
+		computeAndDisplayResults();
+	    }
+	});
+
+	add(jPanel);
 	pack();
 	setVisible(true);
     }
 
     private void computeAndDisplayResults() {
-	// Use identity for the moment.
-	HashMap<String, String> map = new HashMap<>();
-
-	Document document = timeLineTextArea.getDocument();
-	String text;
-	try {
-	    text = document.getText(0, document.getLength());
-	} catch (BadLocationException e) {
-	    System.out.println("Cannot get text: " + e);
-	    return;
-	}
+	List<String> mapLines = getLinesOfTextArea(mapTextArea);
+	Map<String, String> map = MapParser.parse(mapLines);
 
 	Summary summary;
 	try {
-	    summary = TimeCompile.summarize(Arrays.asList(text.split("\n")), map);
+	    summary = TimeCompile.summarize(getLinesOfTextArea(timeLineTextArea), map);
 	} catch (TimeCompileException e) {
 	    resultTextArea.setText("Failed to process input: " + e);
 	    return;
@@ -98,4 +110,16 @@ public final class TimeCompileMainFrame extends JFrame {
 	    resultTextArea.setText(result);
 	}
     }
+
+    private static List<String> getLinesOfTextArea(JTextArea textArea) {
+	Document document = textArea.getDocument();
+	String text;
+	try {
+	    text = document.getText(0, document.getLength());
+	} catch (BadLocationException e) {
+	    throw new RuntimeException(e);
+	}
+	return Arrays.asList(text.split("\n"));
+    }
+
 }
