@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+
+export LC_ALL=C
+
+tag="${1-unset}"
+
+if [ unset = "$tag" ]; then
+    cat >&2 <<EOF
+./release VERSION
+ e.g. ./release 0.2
+Invoke Bazel and generate the files:
+ time-compile-cli-0.2.jar
+ time-compile-gui-0.2.jar
+EOF
+    exit 1
+fi
+
+if ! [[ "$tag" =~ [[:digit:].]+ ]]; then
+    echo "Tag {$tag} does not look like a version" >&2
+    exit 1
+fi
+
+bazel build //cli:cli_deploy.jar
+bazel build //gui:gui_deploy.jar
+cp -f bazel-bin/gui/gui_deploy.jar time-compile-gui-"$tag".jar
+cp -f bazel-bin/cli/cli_deploy.jar time-compile-cli-"$tag".jar
