@@ -86,12 +86,12 @@ public final class TimeCompileMainFrame extends JFrame {
     }
 
     private void computeAndDisplayResults() {
-	List<String> mapLines = getLinesOfTextArea(mapTextArea);
+	List<String> mapLines = getLinesFromTextArea(mapTextArea);
 	Map<String, String> map = MapParser.parse(mapLines);
 
 	Summary summary;
 	try {
-	    summary = TimeCompile.summarize(getLinesOfTextArea(timeLineTextArea), map);
+	    summary = TimeCompile.summarize(getLinesFromTextArea(timeLineTextArea), map);
 	} catch (TimeCompileException e) {
 	    resultTextArea.setText("Failed to process input: " + e);
 	    return;
@@ -111,7 +111,7 @@ public final class TimeCompileMainFrame extends JFrame {
 	}
     }
 
-    private static List<String> getLinesOfTextArea(JTextArea textArea) {
+    private static List<String> getLinesFromTextArea(JTextArea textArea) {
 	Document document = textArea.getDocument();
 	String text;
 	try {
