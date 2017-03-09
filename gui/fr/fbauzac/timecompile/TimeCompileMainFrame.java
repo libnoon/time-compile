@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -37,15 +38,15 @@ public final class TimeCompileMainFrame extends JFrame {
 		"+s support for Charlemagne", "15h34", "+s support for Henry VIII", "16h12",
 		"+m meeting with A. Einstein", "16h49", "+collect daily times", "17h30");
 	timeLineTextArea = new JTextArea(timeLineText);
-	jPanel.add(timeLineTextArea);
+	jPanel.add(new JScrollPane(timeLineTextArea));
 
 	mapTextArea = new JTextArea(stringOfLines("# Put your map here", "#ac: s collect"));
-	jPanel.add(mapTextArea);
+	jPanel.add(new JScrollPane(mapTextArea));
 
 	resultTextArea = new JTextArea("The results will be displayed here");
 	resultTextArea.setEditable(false);
 	resultTextArea.setFont(new Font("monospaced", Font.PLAIN, resultTextArea.getFont().getSize()));
-	jPanel.add(resultTextArea);
+	jPanel.add(new JScrollPane(resultTextArea));
 
 	timeLineTextArea.getDocument().addDocumentListener(new DocumentListener() {
 
