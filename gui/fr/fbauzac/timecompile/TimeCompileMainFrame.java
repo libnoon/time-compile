@@ -22,21 +22,24 @@ public final class TimeCompileMainFrame extends JFrame {
     private final JTextArea resultTextArea;
     private final JTextArea timeLineTextArea;
 
+    private static String stringOfLines(String... lines) {
+	return Arrays.asList(lines).stream().map(s -> s + "\n")
+		.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
+    }
+
     public TimeCompileMainFrame() {
 	super("TimeCompile");
 	setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	JPanel jPanel = new JPanel();
 	jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.X_AXIS));
 
-	String timeLineText = Arrays
-		.asList("# Paste your timeline here:", "14h00", "+m meeting with J. Bond", "15h00",
-			"+s support for Charlemagne", "15h34")
-		.stream().map(s -> s + "\n").collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-		.toString();
+	String timeLineText = stringOfLines("# Paste your timeline here:", "14h00", "+m meeting with J. Bond", "15h00",
+		"+s support for Charlemagne", "15h34", "+s support for Henry VIII", "16h12",
+		"+m meeting with A. Einstein", "16h49", "+collect daily times", "17h30");
 	timeLineTextArea = new JTextArea(timeLineText);
 	jPanel.add(timeLineTextArea);
 
-	mapTextArea = new JTextArea("# Put your map here");
+	mapTextArea = new JTextArea(stringOfLines("# Put your map here", "#ac: s collect"));
 	jPanel.add(mapTextArea);
 
 	resultTextArea = new JTextArea("The results will be displayed here");
@@ -103,6 +106,7 @@ public final class TimeCompileMainFrame extends JFrame {
 	    sb.append(String.format("%10s  %8s  %.1f%%%n", category.getTag(), duration,
 		    100.0 * duration.getMinutes() / totalDuration));
 	}
+	sb.append(String.format("%10s  %8s%n", "TOTAL", Duration.ofMinutes(totalDuration)));
 	String result = sb.toString();
 	if (result.isEmpty()) {
 	    resultTextArea.setText("(nothing to show here)");
