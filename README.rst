@@ -29,7 +29,7 @@ To run the CLI::
      -h, --help                       Show this help screen.
      -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.
 
-To run the GUI (work in progress)::
+To run the GUI::
 
   $ bazel run //gui
 
