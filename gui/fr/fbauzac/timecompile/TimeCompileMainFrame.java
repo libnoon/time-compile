@@ -113,10 +113,10 @@ public final class TimeCompileMainFrame extends JFrame {
 	int totalDuration = summary.getTotalDuration().getMinutes();
 	for (Category category : summary.getCategories()) {
 	    Duration duration = category.getDuration();
-	    sb.append(String.format("%10s  %8s  %.1f%%%n", category.getTag(), duration,
+	    sb.append(String.format("%12s  %8s  %.1f%%%n", category.getTag(), duration,
 		    100.0 * duration.getMinutes() / totalDuration));
 	}
-	sb.append(String.format("%10s  %8s%n", "TOTAL", Duration.ofMinutes(totalDuration)));
+	sb.append(String.format("%12s  %8s%n", "TOTAL", Duration.ofMinutes(totalDuration)));
 	String result = sb.toString();
 	if (result.isEmpty()) {
 	    resultTextArea.setText("(nothing to show here)");
