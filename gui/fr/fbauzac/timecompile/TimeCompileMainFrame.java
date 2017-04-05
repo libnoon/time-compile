@@ -34,22 +34,14 @@ public final class TimeCompileMainFrame extends JFrame {
 	JPanel jPanel = new JPanel();
 	jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.X_AXIS));
 
-	String timeLineText = stringOfLines("# Paste your timeline here:", 
-                                            "14h00", 
-                                            "+m meeting with J. Bond", 
-                                            "15h00",
-                                            "+s support for Charlemagne", 
-                                            "15h34", 
-                                            "+s support for Henry VIII", 
-                                            "16h12",
-                                            "+m meeting with A. Einstein", 
-                                            "16h49", 
-                                            "+collect daily times", 
-                                            "17h30");
+	String timeLineText = stringOfLines("# Paste your timeline here:", "14h00", "+meeting with J. Bond", "15h00",
+		"+support for Charlemagne", "15h34", "+support for Henry VIII", "16h12", "+meeting with A. Einstein",
+		"16h49", "+collect daily times", "17h30");
 	timeLineTextArea = new JTextArea(timeLineText);
 	jPanel.add(new JScrollPane(timeLineTextArea));
 
-	mapTextArea = new JTextArea(stringOfLines("# Put your map here", "#ac: s collect"));
+	mapTextArea = new JTextArea(
+		stringOfLines("# Put your map here", "#misc: meeting collect", "#maintenance: support"));
 	jPanel.add(new JScrollPane(mapTextArea));
 
 	resultTextArea = new JTextArea("The results will be displayed here");
@@ -97,7 +89,7 @@ public final class TimeCompileMainFrame extends JFrame {
 	pack();
 	setVisible(true);
     }
-    
+
     private void computeAndDisplayResults() {
 	List<String> mapLines = getLinesFromTextArea(mapTextArea);
 	Map<String, String> map = MapParser.parse(mapLines);
