@@ -19,7 +19,7 @@ public class Interval {
 	this.lines = lines;
     }
 
-    private static final Pattern TAG_PATTERN = Pattern.compile("(?:\\A| )\\+([\\p{Alnum}-]+)");
+    private static final Pattern TAG_PATTERN = Pattern.compile("(?:\\A| |\n)\\+([\\p{Alnum}-]+)");
 
     static List<String> getTags(String contents) {
 	List<String> accu = new ArrayList<>();

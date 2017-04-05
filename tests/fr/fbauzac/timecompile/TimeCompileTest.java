@@ -74,4 +74,11 @@ public class TimeCompileTest {
 	Summary result = TimeCompile.summarize(lines, identity);
 	assertThat(result.getTotalDuration().getMinutes(), equalTo(60));
     }
+
+    @Test
+    public void tagOnSecondLine() throws TimeCompileException {
+	List<String> lines = Arrays.asList("10h00", "rdv", "+tag", "11h00");
+	Summary result = TimeCompile.summarize(lines, identity);
+	assertThat(result.getTotalDuration().getMinutes(), equalTo(60));
+    }
 }
