@@ -45,3 +45,12 @@ You'll in any case need to tell Eclipse where to find the jopts jar.
 Also, if you have bazel errors about file target/classes/BUILD, tell
 Eclipse to ignore the BUILD files instead of copying them into the
 target folder.
+
+Releasing
+=========
+
+To release::
+
+  $ version=0.3
+  $ git tag -am "v$version" "v$version"
+  $ ./release "$version"
