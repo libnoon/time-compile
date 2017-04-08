@@ -1,15 +1,19 @@
 package fr.fbauzac.timecompile;
 
-import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -20,10 +24,33 @@ public final class TimeCompileMainFrame extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The mapping as an editable input text.
+     */
     private final JTextArea mapTextArea;
-    private final JTextArea resultTextArea;
+
+    /**
+     * The timeline as an editable input text.
+     */
     private final JTextArea timeLineTextArea;
 
+    /**
+     * Panel containing the current result.
+     * 
+     * Result updaters remove its child to replace it with another JComponent.
+     */
+    private final JPanel resultPanel;
+
+    /**
+     * Convert a sequence of lines into a single large string containing all
+     * these lines.
+     * 
+     * The line separator is "\n".
+     * 
+     * @param lines
+     *            the sequence of lines as strings.
+     * @return the large multiline string.
+     */
     private static String stringOfLines(String... lines) {
 	return Arrays.asList(lines).stream().map(s -> s + "\n")
 		.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
@@ -46,11 +73,13 @@ public final class TimeCompileMainFrame extends JFrame {
 	JSplitPane lowerSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(timeLineTextArea),
 		new JScrollPane(mapTextArea));
 
-	resultTextArea = new JTextArea("The results will be displayed here");
-	resultTextArea.setEditable(false);
-	resultTextArea.setFont(new Font("monospaced", Font.PLAIN, resultTextArea.getFont().getSize()));
+	// Use GridLayout so that the child fills the whole area.
+	// See http://docs.oracle.com/javase/tutorial/uiswing/layout/grid.html:
+	// "One of many examples that use a 1x1 grid to make a component as
+	// large as possible."
+	resultPanel = new JPanel(new GridLayout(0, 1));
 
-	jPanel.add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, lowerSplitPane, new JScrollPane(resultTextArea)));
+	jPanel.add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, lowerSplitPane, resultPanel));
 
 	timeLineTextArea.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -89,35 +118,66 @@ public final class TimeCompileMainFrame extends JFrame {
 	});
 
 	add(jPanel);
+	computeAndDisplayResults();
 	pack();
 	setVisible(true);
     }
 
+    /**
+     * Replace the result pane with the given JComponent.
+     * 
+     * @param jComponent
+     *            the new result to display, as a JComponent.
+     */
+    private void setResult(JComponent jComponent) {
+	resultPanel.removeAll();
+	resultPanel.add(jComponent);
+	resultPanel.repaint();
+	resultPanel.revalidate();
+    }
+
+    /**
+     * Update the result panel from the input.
+     * 
+     * This should be called whenever the input changes.
+     */
     private void computeAndDisplayResults() {
 	List<String> mapLines = getLinesFromTextArea(mapTextArea);
 	Map<String, String> map = MapParser.parse(mapLines);
+	final String[] columnNames = { "Category", "Duration", "Percent" };
+	final int nbColumns = columnNames.length;
 
 	Summary summary;
 	try {
 	    summary = TimeCompile.summarize(getLinesFromTextArea(timeLineTextArea), map);
 	} catch (TimeCompileException e) {
-	    resultTextArea.setText("Failed to process input: " + e);
+	    setResult(new JScrollPane(new JLabel("Failed to process input: " + e)));
 	    return;
 	}
-	StringBuilder sb = new StringBuilder();
+
+	List<Category> categories = summary.getCategories();
 	int totalDuration = summary.getTotalDuration().getMinutes();
-	for (Category category : summary.getCategories()) {
+
+	if (categories.size() == 0) {
+	    setResult(new JLabel("(nothing to show here)"));
+	    return;
+	}
+
+	Object[][] tableContents = new Object[categories.size() + 1][nbColumns];
+	IntStream.range(0, categories.size()).forEach(i -> {
+	    Category category = categories.get(i);
 	    Duration duration = category.getDuration();
-	    sb.append(String.format("%12s  %8s  %.1f%%%n", category.getTag(), duration,
-		    100.0 * duration.getMinutes() / totalDuration));
-	}
-	sb.append(String.format("%12s  %8s%n", "TOTAL", Duration.ofMinutes(totalDuration)));
-	String result = sb.toString();
-	if (result.isEmpty()) {
-	    resultTextArea.setText("(nothing to show here)");
-	} else {
-	    resultTextArea.setText(result);
-	}
+	    tableContents[i][0] = category.getTag();
+	    tableContents[i][1] = duration.toString();
+	    tableContents[i][2] = String.format("%.0f%%", 100.0d * duration.getMinutes() / totalDuration);
+	});
+	tableContents[categories.size()][0] = "TOTAL";
+	tableContents[categories.size()][1] = Duration.ofMinutes(totalDuration).toString();
+	tableContents[categories.size()][2] = "100%";
+
+	JTable jTable = new JTable(tableContents, columnNames);
+	jTable.setFillsViewportHeight(true);
+	setResult(new JScrollPane(jTable));
     }
 
     private static List<String> getLinesFromTextArea(JTextArea textArea) {
