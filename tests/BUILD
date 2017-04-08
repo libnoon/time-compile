@@ -20,3 +20,11 @@ java_test(
     test_class = "fr.fbauzac.timecompile.TimeCompileTest",
     deps = ["//lib:time-compile"],
 )
+
+java_test(
+    name = "DurationTest",
+    size = "small",
+    srcs = ["fr/fbauzac/timecompile/DurationTest.java"],
+    test_class = "fr.fbauzac.timecompile.DurationTest",
+    deps = ["//lib:time-compile"],
+)
