@@ -1,0 +1,2 @@
+--watchfs
+build --use_ijars --javacopt="-Xlint:all -Xdoclint:all -extra_checks:on"
