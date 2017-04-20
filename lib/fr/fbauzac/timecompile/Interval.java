@@ -7,10 +7,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * An interval of text between two timestamps, e.g.:
+ *
+ * <pre>
+ * 12h00
+ * +lunch at the GK
+ * 13h45
+ * </pre>
+ */
 public class Interval {
 
+    /**
+     * The timestamp of the start of the interval.
+     */
     private TimeParsedLine startLine;
+
+    /**
+     * The timestamp of the end of the interval.
+     */
     private TimeParsedLine endLine;
+
+    /**
+     * The sequence of content lines in the Interval.
+     */
     private List<ContentParsedLine> lines;
 
     public Interval(TimeParsedLine startLine, TimeParsedLine endLine, List<ContentParsedLine> lines) {

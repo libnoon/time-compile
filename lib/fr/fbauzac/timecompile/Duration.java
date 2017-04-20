@@ -1,17 +1,45 @@
 package fr.fbauzac.timecompile;
 
+/**
+ * Time duration.
+ *
+ * <p>The duration granularity is the minute.
+ */
 public final class Duration {
 
+    /**
+     * The duration as a count of minutes.
+     */
     private final int minutes;
 
-    Duration(int minutes) {
+    /**
+     * Construct a Duration from the given number of minutes.
+     *
+     * @param minutes the number of minutes.
+     */
+    private Duration(int minutes) {
 	this.minutes = minutes;
     }
 
+    /**
+     * Build a Duration object from the given number of minutes.
+     *
+     * @param minutes the count of minutes.
+     * @return the Duration object.
+     */
     public static Duration ofMinutes(int minutes) {
 	return new Duration(minutes);
     }
 
+    /**
+     * Get the duration of a work day in hours.
+     *
+     * <p>The duration of a work day is normally 7 hours, but can be
+     * overridden by setting the fr.fbauzac.time-compile.day-length
+     * property.
+     *
+     * @return the number of hours in a working day.
+     */
     private static int getDayLength() {
 	String str = System.getProperty("fr.fbauzac.time-compile.day-length");
 	if (str != null) {
@@ -47,6 +75,11 @@ public final class Duration {
 	return sb.toString();
     }
 
+    /**
+     * Get the number of minutes in this Duration.
+     *
+     * @return the count of minutes.
+     */
     public int getMinutes() {
 	return minutes;
     }
