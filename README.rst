@@ -13,38 +13,12 @@ any later version, applies to this source code.
 Building
 ========
 
+Prerequisite: install the [pro](https://github.com/forax/pro) build
+tool.
+
 To build::
 
-  $ bazel build //...
-
-To test::
-
-  $ bazel test //tests:all
-
-To run the CLI::
-
-  $ bazel run //cli -- -h
-  time-compile [OPTION...] TIMEFILE
-   Options:
-     -h, --help                       Show this help screen.
-     -m, --maps=MAPFILE[,MAPFILE...]  Apply transformations to the tags.
-
-To run the GUI::
-
-  $ bazel run //gui
-
-
-Development
-===========
-
-If you use Eclipse, there is a e2b plugin available, but it does not
-do much.
-
-You'll in any case need to tell Eclipse where to find the jopts jar.
-
-Also, if you have bazel errors about file target/classes/BUILD, tell
-Eclipse to ignore the BUILD files instead of copying them into the
-target folder.
+  $ pro
 
 Releasing
 =========
