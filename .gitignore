@@ -8,3 +8,6 @@
 
 TAGS
 /lib/target/
+/tests/target/
+/cli/target/
+/gui/target/

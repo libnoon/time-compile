@@ -1,0 +1,17 @@
+{
+    resolver: {
+        dependencies: [
+            "jopt.simple=net.sf.jopt-simple:jopt-simple:6.0-alpha-1",
+            "junit=junit:junit:4.12",
+            "hamcrest.core=org.hamcrest:hamcrest-core:1.3",
+        ]
+    },
+    packager: {
+        moduleMetadata: [
+            "fr.fbauzac.timecompile.gui@1.0/fr.fbauzac.timecompile.TimeCompileMainFrame",
+            "fr.fbauzac.timecompile.cli",
+            "fr.fbauzac.timecompile.lib",
+        ]
+    },
+    run: ["resolver", "compiler", "tester", "packager", "runner"]
+}
